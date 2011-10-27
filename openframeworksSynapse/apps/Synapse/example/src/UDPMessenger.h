@@ -13,46 +13,46 @@
 #include "ofxOsc.h"
 #include "ofxVec3f.h"
 
-#define HOST "localhost"
-#define SEND_PORT 12345
-#define SEND_PORT2 12347
+#define HOST2 "192.168.0.102"
+#define HOST "192.168.0.101"
+#define SEND_PORT 3000
+#define SEND_PORT2 12345
 #define RECEIVE_PORT 12346
 
-class IMessageReceiver
-{
+class IMessageReceiver {
 public:
-   virtual void OnMessage(const ofxOscMessage& msg) = 0;
+	virtual void OnMessage(const ofxOscMessage& msg) = 0;
 };
 
-struct Listener
-{
-   IMessageReceiver* mReceiver;
-   string mLabel;
+struct Listener {
+	IMessageReceiver* mReceiver;
+	string mLabel;
 };
 
-class UDPMessenger
-{
+class UDPMessenger {
 public:
-   UDPMessenger();
-   ~UDPMessenger();
+	UDPMessenger();
+	~UDPMessenger();
    
-   void Poll();
+	void Poll();
+	void Dispatch();
    
-   void SendFloatMessage(string label, float val);
-   void SendIntMessage(string label, int val);
-   void SendStringMessage(string label, string val);
-   void SendVectorMessage(string label, ofxVec3f val);
+	void SendFloatMessage(string label, float val);
+	void SendIntMessage(string label, int val);
+	void SendStringMessage(string label, string val);
+	void SendVectorMessage(string label, ofxVec3f val);
    
-   void AddListener(IMessageReceiver* receiver, string label);
-   void RemoveListener(IMessageReceiver* receiver);
-   void RemoveListener(IMessageReceiver* receiver, string label);
+	void AddListener(IMessageReceiver* receiver, string label);
+	void RemoveListener(IMessageReceiver* receiver);
+	void RemoveListener(IMessageReceiver* receiver, string label);
    
 private:
-   ofxOscSender mSender;
-   ofxOscSender mSender2;
-   ofxOscReceiver mReceiver;
+	ofxOscSender mSender;
+	ofxOscSender mSender2;
+	ofxOscReceiver mReceiver;
+	ofxOscBundle bundle;
    
-   std::list<Listener> mListeners;
+	std::list<Listener> mListeners;
 };
 
 extern UDPMessenger* TheMessenger;

@@ -32,6 +32,35 @@ ofxTrackedUser::ofxTrackedUser(ofxOpenNIContext* pContext)
 	context = pContext;
 	context->getDepthGenerator(&depth_generator);
 	context->getUserGenerator(&user_generator);
+
+	//Custom set limbs found to false
+	neck.found = false;
+	
+	// left arm + shoulder
+	left_shoulder.found = false;
+	left_upper_arm.found = false;
+	left_lower_arm.found = false;
+	
+	// right arm + shoulder
+	right_shoulder.found = false;
+	right_upper_arm.found = false;
+	right_lower_arm.found = false;
+	
+	// upper torso
+	left_upper_torso.found = false;
+	right_upper_torso.found = false;
+	
+	// left lower torso + leg
+	left_lower_torso.found = false;
+	left_upper_leg.found = false;
+	left_lower_leg.found = false;
+	
+	// right lower torso + leg
+	right_lower_torso.found = false;
+	right_upper_leg.found = false;
+	right_lower_leg.found = false;
+
+	hip.found = false;	
 }
 
 void ofxTrackedUser::updateBonePositions() {
@@ -63,11 +92,6 @@ void ofxTrackedUser::updateBonePositions() {
 	updateLimb(right_lower_leg);
 
 	updateLimb(hip);	
-}
-
-bool ofxTrackedUser::IsTracked()
-{
-   return user_generator.GetSkeletonCap().IsTracking(id);
 }
 
 void ofxTrackedUser::updateLimb(ofxLimb& rLimb) {

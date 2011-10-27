@@ -45,6 +45,7 @@
     <ClCompile Include="..\..\..\addons\ofxOsc\src\ofxOscSender.cpp">
       <Filter>ofxOsc\src</Filter>
     </ClCompile>
+    <ClCompile Include="src\TheRoom.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\testApp.h" />
@@ -303,6 +304,7 @@
     <ClInclude Include="..\..\..\addons\ofxOsc\libs\oscpack\include\ip\TimerListener.h">
       <Filter>ofxOsc\src</Filter>
     </ClInclude>
+    <ClInclude Include="src\theroom.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ofxOpenNI">

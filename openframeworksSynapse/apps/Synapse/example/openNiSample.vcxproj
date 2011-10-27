@@ -139,6 +139,7 @@ if not exist "$(ProjectDir)\bin\data" mkdir  "$(ProjectDir)\bin\data"
     <ClCompile Include="src\JointHitDetector.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\testApp.cpp" />
+    <ClCompile Include="src\TheRoom.cpp" />
     <ClCompile Include="src\UDPMessenger.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -229,6 +230,7 @@ if not exist "$(ProjectDir)\bin\data" mkdir  "$(ProjectDir)\bin\data"
     <ClInclude Include="src\ActiveSkeleton.h" />
     <ClInclude Include="src\JointHitDetector.h" />
     <ClInclude Include="src\testApp.h" />
+    <ClInclude Include="src\theroom.h" />
     <ClInclude Include="src\UDPMessenger.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

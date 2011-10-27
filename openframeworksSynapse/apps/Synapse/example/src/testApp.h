@@ -8,10 +8,12 @@
 #include "UDPMessenger.h"
 #include "ActiveSkeleton.h"
 
+#include "TheRoom.h"
+
 class JointHitDetector;
 
 
-class testApp : public ofBaseApp{
+class testApp : public ofBaseApp, public IMessageReceiver{
 	
 public:
 	void setup();
@@ -26,6 +28,9 @@ public:
 	void mousePressed(int x, int y, int button);
 	void mouseReleased(int x, int y, int button);
 	void windowResized(int w, int h);
+
+	void gotMessage(ofxOscMessage msg);
+	void OnMessage(const ofxOscMessage& msg);
 	
 	ofxOpenNIContext	recordContext;
 	ofxDepthGenerator	recordDepth;
@@ -34,9 +39,8 @@ public:
 	ofxUserGenerator	recordUser;
 	
    UDPMessenger mMessenger;
-   std::vector<JointHitDetector*> mHitDetector;
-   JointHitDetector* mClosestHand;
-   ActiveSkeleton mActiveSkeleton;
+   TheRoom* room;
+
 };
 
 #endif
