@@ -35,6 +35,7 @@ public:
 	
 	xn::UserGenerator&	getXnUserGenerator();
 	
+	void				setMaxNumberOfUsers(int nUsers);
 	int					getNumberOfTrackedUsers();
 	ofxTrackedUser*		getTrackedUser(int nUserNum);
 	unsigned char *		getUserPixels(int userID = 0);
