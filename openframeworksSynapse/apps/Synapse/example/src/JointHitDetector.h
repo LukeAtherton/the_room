@@ -7,16 +7,22 @@
  *
  */
 
+#ifndef JointHitDetector_Included
+#define JointHitDetector_Included
+
 #pragma once
 
 #include "ofMain.h"
 #include "ofxOpenNI.h"
 #include "UDPMessenger.h"
+#include "ActiveSkeleton.h"
+
+class ActiveSkeleton;
 
 class JointHitDetector : public IMessageReceiver
 {
 public:
-   JointHitDetector(XnSkeletonJoint joint, XnSkeletonJoint refJoint, string name, float requiredLength = 150);
+   JointHitDetector(ActiveSkeleton* skeleton, XnSkeletonJoint joint, XnSkeletonJoint refJoint, string name, float requiredLength = 150);
    ~JointHitDetector();
    
    void Poll(float dt);
@@ -54,5 +60,8 @@ private:
    float mMessageWorldJointPos;
    float mMessageBodyJointPos;
    float mMessageScreenJointPos;
+
+   ActiveSkeleton* mSkeleton;
 };
 
+#endif

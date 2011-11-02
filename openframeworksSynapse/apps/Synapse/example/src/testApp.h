@@ -1,15 +1,14 @@
 #ifndef _TEST_APP
 #define _TEST_APP
 
-//#define USE_IR // Uncomment this to use infra red instead of RGB cam...
+#define USE_IR // Uncomment this to use infra red instead of RGB cam...
 
 #include "ofMain.h"
 #include "ofxOpenNI.h"
 #include "UDPMessenger.h"
 #include "ActiveSkeleton.h"
 
-class JointHitDetector;
-
+#define MAX_PEOPLE 3
 
 class testApp : public ofBaseApp{
 	
@@ -34,9 +33,7 @@ public:
 	ofxUserGenerator	recordUser;
 	
    UDPMessenger mMessenger;
-   std::vector<JointHitDetector*> mHitDetector;
-   JointHitDetector* mClosestHand;
-   ActiveSkeleton mActiveSkeleton;
+   std::vector<ActiveSkeleton*> mActiveSkeletons;
 };
 
 #endif

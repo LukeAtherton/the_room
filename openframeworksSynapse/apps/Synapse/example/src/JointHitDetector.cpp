@@ -8,14 +8,13 @@
  */
 
 #include "JointHitDetector.h"
-#include "ActiveSkeleton.h"
 #include "UDPMessenger.h"
 #include "ofxVec2f.h"
 
 static float _hitAreaDisplayTime = .25f;
 #define KEEPALIVE_TIME 3.1f
 
-JointHitDetector::JointHitDetector(XnSkeletonJoint joint, XnSkeletonJoint refJoint, string name, float requiredLength)
+JointHitDetector::JointHitDetector(ActiveSkeleton* skeleton, XnSkeletonJoint joint, XnSkeletonJoint refJoint, string name, float requiredLength)
    : mPointHistorySize(5)
    , mRequiredLength(requiredLength)
    , mMessageWorldJointPos(0)
@@ -23,8 +22,12 @@ JointHitDetector::JointHitDetector(XnSkeletonJoint joint, XnSkeletonJoint refJoi
    , mMessageScreenJointPos(0)
    , mJoint(joint)
    , mRefJoint(refJoint)
-   , mName(name)
+   , mSkeleton(skeleton)
 {
+	stringstream detectorNameStream;
+	detectorNameStream << "/p" << skeleton->GetSkeletonID() << name;
+	mName = detectorNameStream.str();
+
    for (int i=0; i<kNumHitDirections; ++i)
       mHitAreaDisplay[i] = 0;
    
@@ -43,11 +46,11 @@ JointHitDetector::~JointHitDetector()
 
 void JointHitDetector::Poll(float dt)
 {
-   if (TheActiveSkeleton->IsTracked())
+   if (mSkeleton->IsTracked())
    {
       float confidence, refConfidence;
-      ofxVec3f vJoint = TheActiveSkeleton->GetRealWorldPos(mJoint, confidence);
-      ofxVec3f vRefJoint = TheActiveSkeleton->GetRealWorldPos(mRefJoint, refConfidence);
+      ofxVec3f vJoint = mSkeleton->GetRealWorldPos(mJoint, confidence);
+      ofxVec3f vRefJoint = mSkeleton->GetRealWorldPos(mRefJoint, refConfidence);
       
       ofxVec3f vRefToJoint = vJoint - vRefJoint;
       //use ref joint as anchor, unless vJoint and vRefJoint are the same
@@ -65,7 +68,7 @@ void JointHitDetector::Poll(float dt)
          TheMessenger->SendVectorMessage(mName+"_pos_body", vRefToJoint);
       if (mMessageScreenJointPos > 0)
       {
-         ofxVec3f vScreen = TheActiveSkeleton->GetProjectivePos(mJoint);
+         ofxVec3f vScreen = mSkeleton->GetProjectivePos(mJoint);
          TheMessenger->SendVectorMessage(mName+"_pos_screen", vScreen);
       }
       
@@ -238,7 +241,7 @@ void JointHitDetector::DrawHitDirection(HitDirection hitDirection) const
          break;
    }
    
-   ofxVec3f vPos = TheActiveSkeleton->GetProjectivePos(mJoint);
+   ofxVec3f vPos = mSkeleton->GetProjectivePos(mJoint);
    
    glPushMatrix();
    glLineWidth(10);

@@ -16,14 +16,41 @@ ActiveSkeleton::ActiveSkeleton()
    , mUser(NULL)
    , mDepthGenerator(NULL)
 {
-   assert(TheActiveSkeleton == NULL);
-   TheActiveSkeleton = this;
+
+}
+
+ActiveSkeleton::ActiveSkeleton(ofxUserGenerator* userGenerator, ofxDepthGenerator* depthGenerator, int skeletonID)
+	: mUserGenerator(userGenerator)
+	, mDepthGenerator(depthGenerator)
+	, mSkeletonID(skeletonID)
+	, mUser(NULL)
+{
+
+	mHitDetector.push_back(new JointHitDetector(this, XN_SKEL_RIGHT_HAND, XN_SKEL_TORSO, "_righthand"));
+	mHitDetector.push_back(new JointHitDetector(this, XN_SKEL_LEFT_HAND, XN_SKEL_TORSO, "_lefthand"));
+	mHitDetector.push_back(new JointHitDetector(this, XN_SKEL_RIGHT_ELBOW, XN_SKEL_TORSO, "_rightelbow"));
+	mHitDetector.push_back(new JointHitDetector(this, XN_SKEL_LEFT_ELBOW, XN_SKEL_TORSO, "_leftelbow"));
+	mHitDetector.push_back(new JointHitDetector(this, XN_SKEL_RIGHT_KNEE, XN_SKEL_TORSO, "_rightknee"));
+	mHitDetector.push_back(new JointHitDetector(this, XN_SKEL_LEFT_KNEE, XN_SKEL_TORSO, "_leftknee"));
+	mHitDetector.push_back(new JointHitDetector(this, XN_SKEL_RIGHT_FOOT, XN_SKEL_TORSO, "_rightfoot"));
+	mHitDetector.push_back(new JointHitDetector(this, XN_SKEL_LEFT_FOOT, XN_SKEL_TORSO, "_leftfoot"));
+	mHitDetector.push_back(new JointHitDetector(this, XN_SKEL_HEAD, XN_SKEL_RIGHT_HIP, "_head"));
+	mHitDetector.push_back(new JointHitDetector(this, XN_SKEL_TORSO, XN_SKEL_TORSO, "_torso", 75));
+	mHitDetector.push_back(new JointHitDetector(this, XN_SKEL_NECK, XN_SKEL_TORSO, "_neck"));
+	mHitDetector.push_back(new JointHitDetector(this, XN_SKEL_LEFT_SHOULDER, XN_SKEL_TORSO, "_leftshoulder"));
+	mHitDetector.push_back(new JointHitDetector(this, XN_SKEL_RIGHT_SHOULDER, XN_SKEL_TORSO, "_rightshoulder"));
+	mHitDetector.push_back(new JointHitDetector(this, XN_SKEL_LEFT_HIP, XN_SKEL_TORSO, "_lefthip"));
+	mHitDetector.push_back(new JointHitDetector(this, XN_SKEL_RIGHT_HIP, XN_SKEL_TORSO, "_righthip"));
+	mClosestHand = new JointHitDetector(this, XN_SKEL_RIGHT_HAND, XN_SKEL_TORSO, "_closesthand");
+	mHitDetector.push_back(mClosestHand);
+
 }
 
 ActiveSkeleton::~ActiveSkeleton()
 {
-   assert(TheActiveSkeleton == this);
-   TheActiveSkeleton = NULL;
+
+   for (int currentDetector=0; currentDetector<mHitDetector.size(); ++currentDetector)
+      delete mHitDetector[currentDetector];
 }
 
 ofxVec3f ActiveSkeleton::GetRealWorldPos(XnSkeletonJoint joint, float& confidence) const
@@ -56,4 +83,30 @@ ofxVec3f ActiveSkeleton::GetProjectivePos(XnSkeletonJoint joint) const
    
    vPos.x = pos[0].X; vPos.y = pos[0].Y; vPos.z = pos[0].Z; 
    return vPos;
+}
+
+void ActiveSkeleton::PollJointHitDetectors(float dt){
+	for (int i=0; i < mHitDetector.size(); ++i)
+	{
+		mHitDetector[i]->Poll(dt);
+	}
+}
+
+void ActiveSkeleton::UpdateClosestHand(){
+	float dummy;
+	if (this->GetRealWorldPos(XN_SKEL_RIGHT_HAND, dummy).z <
+		this->GetRealWorldPos(XN_SKEL_LEFT_HAND, dummy).z)
+		mClosestHand->SetJoint(XN_SKEL_RIGHT_HAND);
+	else
+		mClosestHand->SetJoint(XN_SKEL_LEFT_HAND);
+}
+
+void ActiveSkeleton::UpdateSkeleton(float dt){
+	this->UpdateClosestHand();
+	this->PollJointHitDetectors(dt);
+}
+
+void ActiveSkeleton::Draw(){
+	for (int i=0; i<mHitDetector.size(); ++i)
+		mHitDetector[i]->Draw();
 }

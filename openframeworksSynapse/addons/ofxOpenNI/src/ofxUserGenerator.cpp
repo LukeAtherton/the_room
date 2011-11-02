@@ -15,11 +15,32 @@ void XN_CALLBACK_TYPE User_NewUser(
 {
 	printf("New User %d\n", nID);
 	ofxUserGenerator* user = static_cast<ofxUserGenerator*>(pCookie);
-	if(user->needsPoseForCalibration()) {
-		user->startPoseDetection(nID);
-	}
-	else {
-		user->requestCalibration(nID);
+
+	int intStat; 
+	struct stat stFileInfo; 
+	string strFilename;
+
+	strFilename = "calibrationData.bin";
+	intStat = stat(strFilename.c_str(),&stFileInfo); 
+
+	if (intStat == 0){
+		printf("file exists\n");
+		if ( user->getXnUserGenerator().GetSkeletonCap().LoadCalibrationData( nID, 0 ) == XN_STATUS_OK ) {
+			printf("calibration exists\n");
+			user->startTracking(nID);  
+		}else{
+			printf("no calibration\n");
+			user->reloadCalibrationData(nID, strFilename);
+			user->getXnUserGenerator().GetSkeletonCap().SaveCalibrationData( nID, 0 ); 
+			user->startTracking(nID);
+		}
+	}else{
+		if(user->needsPoseForCalibration()) {
+			user->startPoseDetection(nID);
+		}
+		else {
+			user->requestCalibration(nID);	
+		}
 	}
 }
 
@@ -72,6 +93,7 @@ void XN_CALLBACK_TYPE UserCalibration_CalibrationEnd(
 	if(bSuccess) {
 		printf("+++++++++++++++++++++++ Succesfully tracked user: %d\n", nID);
 		user->startTracking(nID);
+		user->recordCalibrationData(nID, "calibrationData");
 	}
 	else {
 		if(user->needsPoseForCalibration()) {
@@ -458,4 +480,13 @@ bool ofxUserGenerator::needsPoseForCalibration() {
 //----------------------------------------
 xn::UserGenerator& ofxUserGenerator::getXnUserGenerator() {
 	return user_generator;
+}
+
+void ofxUserGenerator::recordCalibrationData(XnUserID nID, string filename){
+    filename += ".bin";
+    user_generator.GetSkeletonCap().SaveCalibrationDataToFile(nID, (const XnChar *)filename.c_str());
+}
+
+void ofxUserGenerator::reloadCalibrationData(XnUserID nID, string filename){
+    user_generator.GetSkeletonCap().LoadCalibrationDataFromFile(nID, filename.data());
 }

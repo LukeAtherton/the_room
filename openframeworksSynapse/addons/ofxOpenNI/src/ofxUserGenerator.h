@@ -44,7 +44,10 @@ public:
 	
 	int					getWidth();
 	int					getHeight();
-    
+	
+    void                recordCalibrationData(XnUserID nID, string filename);
+    void                reloadCalibrationData(XnUserID nID, string filename);	
+	
 private:
 	
 	void				drawUser(int nUserNum);
