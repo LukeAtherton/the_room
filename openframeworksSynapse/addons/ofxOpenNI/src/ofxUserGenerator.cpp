@@ -2,8 +2,6 @@
 #include "ofxOpenNIMacros.h"
 #include "ofxTrackedUser.h"
 
-#include <sys/stat.h> 
-
 // CALLBACKS
 // =============================================================================
 // Callback: New user was detected
@@ -15,35 +13,14 @@ void XN_CALLBACK_TYPE User_NewUser(
 {
 	printf("New User %d\n", nID);
 	ofxUserGenerator* user = static_cast<ofxUserGenerator*>(pCookie);
-	/*if ( user->getXnUserGenerator().GetSkeletonCap().LoadCalibrationData( nID, 0 ) == XN_STATUS_OK ) {
-        user->startTracking(nID);  
-    }*/
-
-	int intStat; 
-	struct stat stFileInfo; 
-	string strFilename;
-
-	strFilename = "calibrationData.bin";
-	intStat = stat(strFilename.c_str(),&stFileInfo); 
-
-	if (intStat == 0){
-		printf("file exists\n");
+	if(user->needsPoseForCalibration()) {
+		user->startPoseDetection(nID);
+	}
+	else {
+		user->requestCalibration(nID); 
 		if ( user->getXnUserGenerator().GetSkeletonCap().LoadCalibrationData( nID, 0 ) == XN_STATUS_OK ) {
-			printf("calibration exists\n");
-			user->startTracking(nID);  
-		}else{
-			printf("no calibration\n");
-			user->reloadCalibrationData(nID, strFilename);
-			user->getXnUserGenerator().GetSkeletonCap().SaveCalibrationData( nID, 0 ); 
-			user->startTracking(nID);
-		}
-	}else{
-		if(user->needsPoseForCalibration()) {
-			user->startPoseDetection(nID);
-		}
-		else {
-			user->requestCalibration(nID);	
-		}
+ 	         user->startTracking(nID);  
+ 		}
 	}
 }
 
@@ -96,8 +73,7 @@ void XN_CALLBACK_TYPE UserCalibration_CalibrationEnd(
 	if(bSuccess) {
 		printf("+++++++++++++++++++++++ Succesfully tracked user: %d\n", nID);
 		user->startTracking(nID);
-		//user->getXnUserGenerator().GetSkeletonCap().SaveCalibrationData( nID, 0 );  
-		user->recordCalibrationData(nID, "calibrationData");
+		user->getXnUserGenerator().GetSkeletonCap().SaveCalibrationData( nID, 0 );  
 	}
 	else {
 		if(user->needsPoseForCalibration()) {
@@ -113,7 +89,6 @@ void XN_CALLBACK_TYPE UserCalibration_CalibrationEnd(
 // =============================================================================
 ofxUserGenerator::ofxUserGenerator() {	
 	needs_pose = false;
-	max_num_users = MAX_NUMBER_USERS;
 }
 
 
@@ -245,7 +220,7 @@ bool ofxUserGenerator::setup( ofxOpenNIContext* pContext) {
 // Draw a specific user (start counting at 0)
 //----------------------------------------
 void ofxUserGenerator::drawUser(int nUserNum) {
-	if(nUserNum - 1 > max_num_users)
+	if(nUserNum - 1 > MAX_NUMBER_USERS)
 		return;
 	tracked_users[nUserNum]->updateBonePositions();
 	tracked_users[nUserNum]->debugDraw();
@@ -284,13 +259,6 @@ ofxTrackedUser* ofxUserGenerator::getTrackedUser(int nUserNum) {
 	
 }
 
-void ofxUserGenerator::setMaxNumberOfUsers(int nUsers) {
-	// TODO: make this truly dynamic by replacing the define and writing dynamic allocation/deletion functions for the arrays! Lazy method below ;-)
-	if (nUsers <= MAX_NUMBER_USERS) {
-		max_num_users = nUsers;
-	} else printf("Attempting to set number of tracked users higher than MAX_NUMBER_USERS - change the define in ofxUserGenerator.h first!");
-}
-
 // Get number of tracked users
 int ofxUserGenerator::getNumberOfTrackedUsers() {
 	return found_users;
@@ -300,9 +268,9 @@ int ofxUserGenerator::getNumberOfTrackedUsers() {
 //----------------------------------------
 void ofxUserGenerator::update() {
 	
-	found_users = max_num_users;
+	found_users = MAX_NUMBER_USERS;
 	
-	XnUserID* users = new XnUserID[max_num_users];
+	XnUserID* users = new XnUserID[MAX_NUMBER_USERS];
 	user_generator.GetUsers(users, found_users);
 	
 	for(int i = 0; i < found_users; ++i) {
@@ -371,7 +339,7 @@ void ofxUserGenerator::updateUserPixels() {
 	for (int i =0 ; i < width * height; i++) {
 		
 		// lets cycle through the users and allocate pixels into seperate masks for each user, including 0 as all users
-		for (int user = 0; user <= max_num_users; user++) {
+		for (int user = 0; user <= MAX_NUMBER_USERS; user++) {
 			if (userPix[i] == user) {
 				maskPixels[user][i] = (user == 0 ? 0 : 255);
 			} else maskPixels[user][i] = (user == 0 ? 255 : 0);
@@ -413,7 +381,7 @@ void ofxUserGenerator::updateCloudPoints() {
 		
 		for (int nX = 0; nX < width; nX += step, nIndex += step) {
 		
-			for (int user = 0; user <= max_num_users; user++) {
+			for (int user = 0; user <= MAX_NUMBER_USERS; user++) {
 
 				if (userPix[nIndex] == user || user == 0) {
 					cloudPoints[user][nIndex].x = nX;
@@ -484,13 +452,4 @@ bool ofxUserGenerator::needsPoseForCalibration() {
 //----------------------------------------
 xn::UserGenerator& ofxUserGenerator::getXnUserGenerator() {
 	return user_generator;
-}
-
-void ofxUserGenerator::recordCalibrationData(XnUserID nID, string filename){
-    filename += ".bin";
-    user_generator.GetSkeletonCap().SaveCalibrationDataToFile(nID, (const XnChar *)filename.c_str());
-}
-
-void ofxUserGenerator::reloadCalibrationData(XnUserID nID, string filename){
-    user_generator.GetSkeletonCap().LoadCalibrationDataFromFile(nID, filename.data());
 }

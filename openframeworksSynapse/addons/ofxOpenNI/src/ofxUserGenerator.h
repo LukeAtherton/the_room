@@ -5,7 +5,7 @@
 #include "ofxDepthGenerator.h"
 #include "ofxImageGenerator.h"
 
-#define MAX_NUMBER_USERS 4
+#define MAX_NUMBER_USERS 8
 
 class ofxTrackedUser;
 
@@ -35,7 +35,6 @@ public:
 	
 	xn::UserGenerator&	getXnUserGenerator();
 	
-	void				setMaxNumberOfUsers(int nUsers);
 	int					getNumberOfTrackedUsers();
 	ofxTrackedUser*		getTrackedUser(int nUserNum);
 	unsigned char *		getUserPixels(int userID = 0);
@@ -45,10 +44,6 @@ public:
 	int					getWidth();
 	int					getHeight();
     
-	
-    void                recordCalibrationData(XnUserID nID, string filename);
-    void                reloadCalibrationData(XnUserID nID, string filename);	
-	
 private:
 	
 	void				drawUser(int nUserNum);
