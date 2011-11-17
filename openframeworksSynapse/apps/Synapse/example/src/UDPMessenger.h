@@ -13,10 +13,10 @@
 #include "ofxOsc.h"
 #include "ofxVec3f.h"
 
-#define HOST2 "192.168.0.102"
-#define HOST "192.168.0.101"
-#define SEND_PORT 3000
-#define SEND_PORT2 12345
+#define HOST2 "localhost"
+#define HOST "localhost"
+#define SEND_PORT 12345
+#define SEND_PORT2 22345
 #define RECEIVE_PORT 12346
 
 class IMessageReceiver {

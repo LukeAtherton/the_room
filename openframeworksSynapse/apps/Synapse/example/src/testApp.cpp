@@ -17,6 +17,9 @@ void testApp::setup()
 		mActiveSkeletons.push_back(new ActiveSkeleton(&recordUser, &recordDepth, activeSkeleton));
 	}
 
+	roomEmpty = true;
+	TheMessenger->SendStringMessage("/room_empty", "true");
+
 	ofBackground(0, 0, 0);
 }
 
@@ -46,12 +49,19 @@ void testApp::update()
 		{
 			mActiveSkeletons[currentUser]->SetActiveUser(pUser);
 			mActiveSkeletons[currentUser]->UpdateSkeleton(dt);
+			if(roomEmpty){
+				roomEmpty = false;
+				TheMessenger->SendStringMessage("/room_empty", "false");
+			}
 		}else{
 			mActiveSkeletons[currentUser]->SetActiveUser(NULL);
 		}
 	}
 
-	TheMessenger->SendIntMessage("/tracking_skeleton", recordUser.getNumberOfTrackedUsers());
+	if(recordUser.getNumberOfTrackedUsers() == 0 && !roomEmpty){
+		roomEmpty = true;
+		TheMessenger->SendStringMessage("/room_empty", "true");
+	}
 }
 
 //--------------------------------------------------------------

@@ -34,6 +34,7 @@ public:
 	
    UDPMessenger mMessenger;
    std::vector<ActiveSkeleton*> mActiveSkeletons;
+   bool roomEmpty;
 };
 
 #endif

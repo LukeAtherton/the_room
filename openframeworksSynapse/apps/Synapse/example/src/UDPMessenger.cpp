@@ -31,7 +31,7 @@ UDPMessenger::~UDPMessenger() {
 }
 
 void UDPMessenger::Dispatch() {
-	mSender.sendBundle(bundle);
+	//mSender.sendBundle(bundle);
 	mSender2.sendBundle(bundle);
 
 	// Clear the bundle after we have dispatched it.
@@ -84,6 +84,7 @@ void UDPMessenger::SendFloatMessage(string label, float val) {
 	ofxOscMessage msg;
 	msg.setAddress(label);
 	msg.addFloatArg(val);
+	mSender.sendMessage(msg);
 	bundle.addMessage(msg);
 }
 
@@ -91,6 +92,7 @@ void UDPMessenger::SendIntMessage(string label, int val) {
 	ofxOscMessage msg;
 	msg.setAddress(label);
 	msg.addIntArg(val);
+	mSender.sendMessage(msg);
 	bundle.addMessage(msg);
 }
 
@@ -99,6 +101,7 @@ void UDPMessenger::SendStringMessage(string label, string val) {
 	ofxOscMessage msg;
 	msg.setAddress(label);
 	msg.addStringArg(val);
+	mSender.sendMessage(msg);
 	bundle.addMessage(msg);
 }
 
@@ -108,5 +111,6 @@ void UDPMessenger::SendVectorMessage(string label, ofxVec3f val) {
 	msg.addFloatArg(val.x);
 	msg.addFloatArg(val.y);
 	msg.addFloatArg(val.z);	
+	mSender.sendMessage(msg);
 	bundle.addMessage(msg);
 }
