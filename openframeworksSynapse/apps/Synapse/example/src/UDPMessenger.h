@@ -13,10 +13,10 @@
 #include "ofxOsc.h"
 #include "ofxVec3f.h"
 
-#define HOST2 "localhost"
-#define HOST "localhost"
-#define SEND_PORT 12345
-#define SEND_PORT2 22345
+#define UNBUNDLED_HOST "localhost"
+#define BUNDLED_HOST "localhost"
+#define UNBUNDLED_SEND_PORT 12345
+#define BUNDLED_SEND_PORT 22345
 #define RECEIVE_PORT 12346
 
 class IMessageReceiver {
@@ -33,6 +33,8 @@ class UDPMessenger {
 public:
 	UDPMessenger();
 	~UDPMessenger();
+
+	void readConfFile(std::istream& is);
    
 	void Poll();
 	void Dispatch();
@@ -47,12 +49,17 @@ public:
 	void RemoveListener(IMessageReceiver* receiver, string label);
    
 private:
-	ofxOscSender mSender;
-	ofxOscSender mSender2;
+	ofxOscSender mUnBundledSender;
+	ofxOscSender mBundledSender;
 	ofxOscReceiver mReceiver;
 	ofxOscBundle bundle;
    
 	std::list<Listener> mListeners;
+
+	string mBundledHost;
+	string mUnBundledHost;
+	int mBundledSendPort;
+	int mUnBundledSendPort;
 };
 
 extern UDPMessenger* TheMessenger;

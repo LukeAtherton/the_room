@@ -14,10 +14,28 @@ UDPMessenger::UDPMessenger() {
 	fprintf(stderr, "creating messenger\n");
 	//assert(TheMessenger == NULL);
 	TheMessenger = this;
+
+	mBundledHost = BUNDLED_HOST;
+	mUnBundledHost = UNBUNDLED_HOST;
+	mBundledSendPort = BUNDLED_SEND_PORT;
+	mUnBundledSendPort = UNBUNDLED_SEND_PORT;
+
+	ifstream ifs("room.ini");
+	if(ifs.good()){
+		readConfFile(ifs);
+	}else{
+		cout << "Config File Error\n";
+		// throw my_exceptions("cannot open file");
+	}
+
+	cout << "MAX IP:" << mUnBundledHost << "\n";
+	cout << "MAX PORT:" << mUnBundledSendPort << "\n";
+	cout << "QUARTZ IP:" << mBundledHost << "\n";
+	cout << "QUARTZ PORT:" << mBundledSendPort << "\n";
    
 	// open an outgoing connection to HOST:SEND_PORT
-	mSender.setup(HOST, SEND_PORT);
-	mSender2.setup(HOST2, SEND_PORT2);
+	mUnBundledSender.setup(mUnBundledHost, mUnBundledSendPort);
+	mBundledSender.setup(mBundledHost, mBundledSendPort);
    
 	// open connection listening to RECEIVE_PORT
 	mReceiver.setup(RECEIVE_PORT);
@@ -30,9 +48,58 @@ UDPMessenger::~UDPMessenger() {
 	TheMessenger = NULL;
 }
 
+void UDPMessenger::readConfFile(std::istream& is) 
+{
+	string key;
+	string value;
+	string identifier;
+
+  for(;;) {
+    string line;
+	char c;
+
+    getline(is, line);
+    if(!is) break;
+
+    istringstream iss(line);
+
+	c=iss.peek();
+	if(c == '['){
+		iss.ignore(1);
+		getline(iss,identifier,']');
+		//cout << "Identifier found: " << identifier << "\n";
+	}else{
+		getline(iss, key, '=');
+		//cout << "Key found: " << key << "\n";
+		getline(iss, value);
+		//cout << "Value found: " << value << "\n";
+		if(identifier == "max"){
+			if(key == "ip"){
+				mUnBundledHost = value;
+			}else{
+				if(key == "port"){
+					mUnBundledSendPort = atoi(value.c_str());
+				}
+			}
+		}else{
+			if(identifier == "quartz"){
+				if(key == "ip"){
+					mBundledHost = value;
+				}else{
+					if(key == "port"){
+						mBundledSendPort = atoi(value.c_str());
+					}
+				}
+			}
+		}
+	}
+  }
+  if(!is.eof()) cout << "Config File Error\n";
+  //if(!is.eof()) throw my_exceptions("error reading file");
+}
+
 void UDPMessenger::Dispatch() {
-	//mSender.sendBundle(bundle);
-	mSender2.sendBundle(bundle);
+	mBundledSender.sendBundle(bundle);
 
 	// Clear the bundle after we have dispatched it.
 	bundle.clear();
@@ -81,18 +148,20 @@ void UDPMessenger::RemoveListener(IMessageReceiver* receiver, string label) {
 }
 
 void UDPMessenger::SendFloatMessage(string label, float val) {	
+	cout << label << ":" << val << "\n";
 	ofxOscMessage msg;
 	msg.setAddress(label);
 	msg.addFloatArg(val);
-	mSender.sendMessage(msg);
+	mUnBundledSender.sendMessage(msg);
 	bundle.addMessage(msg);
 }
 
 void UDPMessenger::SendIntMessage(string label, int val) {
+	cout << label << ":" << val << "\n";
 	ofxOscMessage msg;
 	msg.setAddress(label);
 	msg.addIntArg(val);
-	mSender.sendMessage(msg);
+	mUnBundledSender.sendMessage(msg);
 	bundle.addMessage(msg);
 }
 
@@ -101,16 +170,17 @@ void UDPMessenger::SendStringMessage(string label, string val) {
 	ofxOscMessage msg;
 	msg.setAddress(label);
 	msg.addStringArg(val);
-	mSender.sendMessage(msg);
+	mUnBundledSender.sendMessage(msg);
 	bundle.addMessage(msg);
 }
 
 void UDPMessenger::SendVectorMessage(string label, ofxVec3f val) {
+	cout << label << ":" << val.x << "-" << val.y << "-" << val.z << "\n";
 	ofxOscMessage msg;
 	msg.setAddress(label);
 	msg.addFloatArg(val.x);
 	msg.addFloatArg(val.y);
 	msg.addFloatArg(val.z);	
-	mSender.sendMessage(msg);
+	mUnBundledSender.sendMessage(msg);
 	bundle.addMessage(msg);
 }
