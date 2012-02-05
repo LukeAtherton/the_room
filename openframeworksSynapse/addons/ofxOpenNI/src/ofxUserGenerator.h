@@ -5,7 +5,7 @@
 #include "ofxDepthGenerator.h"
 #include "ofxImageGenerator.h"
 
-#define MAX_NUMBER_USERS 8
+#define MAX_NUMBER_USERS 4
 
 class ofxTrackedUser;
 

@@ -100,7 +100,6 @@ void UDPMessenger::readConfFile(std::istream& is)
 
 void UDPMessenger::Dispatch() {
 	mBundledSender.sendBundle(bundle);
-
 	// Clear the bundle after we have dispatched it.
 	bundle.clear();
 }
@@ -153,7 +152,8 @@ void UDPMessenger::SendFloatMessage(string label, float val) {
 	msg.setAddress(label);
 	msg.addFloatArg(val);
 	mUnBundledSender.sendMessage(msg);
-	bundle.addMessage(msg);
+	//mBundledSender.sendMessage(msg);
+	//bundle.addMessage(msg);
 }
 
 void UDPMessenger::SendIntMessage(string label, int val) {
@@ -162,7 +162,8 @@ void UDPMessenger::SendIntMessage(string label, int val) {
 	msg.setAddress(label);
 	msg.addIntArg(val);
 	mUnBundledSender.sendMessage(msg);
-	bundle.addMessage(msg);
+	//mBundledSender.sendMessage(msg);
+	//bundle.addMessage(msg);
 }
 
 void UDPMessenger::SendStringMessage(string label, string val) {
@@ -171,16 +172,18 @@ void UDPMessenger::SendStringMessage(string label, string val) {
 	msg.setAddress(label);
 	msg.addStringArg(val);
 	mUnBundledSender.sendMessage(msg);
-	bundle.addMessage(msg);
+	//mBundledSender.sendMessage(msg);
+	//bundle.addMessage(msg);
 }
 
 void UDPMessenger::SendVectorMessage(string label, ofxVec3f val) {
-	cout << label << ":" << val.x << "-" << val.y << "-" << val.z << "\n";
+	//cout << label << ":" << val.x << "-" << val.y << "-" << val.z << "\n";
 	ofxOscMessage msg;
 	msg.setAddress(label);
 	msg.addFloatArg(val.x);
 	msg.addFloatArg(val.y);
 	msg.addFloatArg(val.z);	
 	mUnBundledSender.sendMessage(msg);
+	//mBundledSender.sendMessage(msg);
 	bundle.addMessage(msg);
 }

@@ -16,6 +16,7 @@
 #include "ofxOpenNI.h"
 #include "ofxVec3f.h"
 #include "JointHitDetector.h"
+#include "ofUtils.h"
 
 class JointHitDetector;
 
@@ -51,6 +52,9 @@ private:
    std::vector<JointHitDetector*> mHitDetector;
    JointHitDetector* mClosestHand;
    int mSkeletonID;
+
+   int lastPollTime;
+   float dt2;
 };
 
 #endif

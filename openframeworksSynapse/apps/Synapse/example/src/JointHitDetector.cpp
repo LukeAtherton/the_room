@@ -62,7 +62,7 @@ void JointHitDetector::Poll(float dt)
       while (mPoints.size() > mPointHistorySize)
          mPoints.erase(mPoints.begin());      
       
-      if (mMessageWorldJointPos > 0)
+      //if (mMessageWorldJointPos > 0)
          TheMessenger->SendVectorMessage(mName+"_pos_world", vJoint);
       if (mMessageBodyJointPos > 0)
          TheMessenger->SendVectorMessage(mName+"_pos_body", vRefToJoint);

@@ -12,6 +12,7 @@
 #include "ofMain.h"
 #include "ofxOsc.h"
 #include "ofxVec3f.h"
+#include <time.h>
 
 #define UNBUNDLED_HOST "localhost"
 #define BUNDLED_HOST "localhost"
@@ -60,6 +61,10 @@ private:
 	string mUnBundledHost;
 	int mBundledSendPort;
 	int mUnBundledSendPort;
+
+	time_t lastSendBundled;
+	time_t lastSendUnBundled;
+
 };
 
 extern UDPMessenger* TheMessenger;
