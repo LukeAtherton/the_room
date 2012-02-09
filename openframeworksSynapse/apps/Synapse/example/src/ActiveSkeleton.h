@@ -53,8 +53,6 @@ private:
    JointHitDetector* mClosestHand;
    int mSkeletonID;
 
-   int lastPollTime;
-   float dt2;
 };
 
 #endif

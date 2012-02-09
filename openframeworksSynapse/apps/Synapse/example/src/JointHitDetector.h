@@ -60,6 +60,7 @@ private:
    float mMessageWorldJointPos;
    float mMessageBodyJointPos;
    float mMessageScreenJointPos;
+   float mTimer;
 
    ActiveSkeleton* mSkeleton;
 };

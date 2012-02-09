@@ -40,7 +40,8 @@ void testApp::update()
 	
 	TheMessenger->Poll();
    
-	float dt = .01666f;
+	int currentTime = ofGetElapsedTimeMillis();
+	float dt = (float) (currentTime - lastPollTime) / 1000.0f;
 
 	for (int currentUser=0; currentUser<recordUser.getNumberOfTrackedUsers(); ++currentUser)
 	{
@@ -62,6 +63,9 @@ void testApp::update()
 		roomEmpty = true;
 		TheMessenger->SendStringMessage("/room_empty", "true");
 	}
+
+	TheMessenger->Dispatch();
+	lastPollTime = currentTime;
 }
 
 //--------------------------------------------------------------

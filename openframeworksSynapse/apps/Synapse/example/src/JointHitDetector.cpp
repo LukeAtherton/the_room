@@ -27,6 +27,7 @@ JointHitDetector::JointHitDetector(ActiveSkeleton* skeleton, XnSkeletonJoint joi
 	stringstream detectorNameStream;
 	detectorNameStream << "/p" << skeleton->GetSkeletonID() << name;
 	mName = detectorNameStream.str();
+	mTimer = 0.0f;
 
    for (int i=0; i<kNumHitDirections; ++i)
       mHitAreaDisplay[i] = 0;
@@ -59,22 +60,28 @@ void JointHitDetector::Poll(float dt)
       else
          mPoints.push_back(vJoint);
       //limit to kPointHistorySize
-      while (mPoints.size() > mPointHistorySize)
+      while (mPoints.size() > mPointHistorySize){
          mPoints.erase(mPoints.begin());      
+	  }
       
-      //if (mMessageWorldJointPos > 0)
+      //if (mMessageWorldJointPos > 0.0f)
+	  if (mTimer > 0.05f) {
+		  //cout << "Updating message:" << mTimer;
          TheMessenger->SendVectorMessage(mName+"_pos_world", vJoint);
-      if (mMessageBodyJointPos > 0)
+     // if (mMessageBodyJointPos > 0.0f)
          TheMessenger->SendVectorMessage(mName+"_pos_body", vRefToJoint);
-      if (mMessageScreenJointPos > 0)
-      {
+      //if (mMessageScreenJointPos > 0.0f)
+      //{
          ofxVec3f vScreen = mSkeleton->GetProjectivePos(mJoint);
          TheMessenger->SendVectorMessage(mName+"_pos_screen", vScreen);
-      }
+		 mTimer = 0.0f;
+	  }
+
+	  mTimer += dt;
       
-      mMessageWorldJointPos = MAX(0, mMessageWorldJointPos - dt);
-      mMessageBodyJointPos = MAX(0, mMessageBodyJointPos - dt);
-      mMessageScreenJointPos = MAX(0, mMessageScreenJointPos - dt);
+      mMessageWorldJointPos = MAX(0.0f, mMessageWorldJointPos - dt);
+      mMessageBodyJointPos = MAX(0.0f, mMessageBodyJointPos - dt);
+      mMessageScreenJointPos = MAX(0.0f, mMessageScreenJointPos - dt);
       
       float refDist = vRefToJoint.length();
       if (refDist != 0)

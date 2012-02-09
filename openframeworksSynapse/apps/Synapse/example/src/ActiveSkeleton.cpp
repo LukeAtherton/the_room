@@ -44,9 +44,6 @@ ActiveSkeleton::ActiveSkeleton(ofxUserGenerator* userGenerator, ofxDepthGenerato
 	mClosestHand = new JointHitDetector(this, XN_SKEL_RIGHT_HAND, XN_SKEL_TORSO, "_closesthand");
 	mHitDetector.push_back(mClosestHand);
 
-	lastPollTime = 0;
-	dt2=0;
-
 }
 
 ActiveSkeleton::~ActiveSkeleton()
@@ -106,14 +103,7 @@ void ActiveSkeleton::UpdateClosestHand(){
 
 void ActiveSkeleton::UpdateSkeleton(float dt){
 	this->UpdateClosestHand();
-
-	//if(lastPollTime + 60 < ofGetElapsedTimeMillis()){
-		this->PollJointHitDetectors(dt);
-		/*lastPollTime = ofGetElapsedTimeMillis();
-		dt2=0;
-	}else{
-		dt2+=dt;
-	}*/
+	this->PollJointHitDetectors(dt);
 }
 
 void ActiveSkeleton::Draw(){

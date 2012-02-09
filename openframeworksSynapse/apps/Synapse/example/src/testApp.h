@@ -35,6 +35,9 @@ public:
    UDPMessenger mMessenger;
    std::vector<ActiveSkeleton*> mActiveSkeletons;
    bool roomEmpty;
+
+   int lastPollTime;
+   float dt2;
 };
 
 #endif
