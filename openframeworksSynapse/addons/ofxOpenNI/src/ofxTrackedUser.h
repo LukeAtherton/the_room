@@ -29,11 +29,11 @@ struct ofxLimb {
 		if(!found)
 			return;
 		glPushMatrix();
-		glLineWidth(5);
-		glColor3f(1,0,0);
+		glLineWidth(10);
+		glColor4f(0,1,0,0.3f);
 		glBegin(GL_LINES);
-		glVertex2i(position[0].X, position[0].Y);
-		glVertex2i(position[1].X, position[1].Y);
+		glVertex2i(position[0].X * 1.5f, position[0].Y * 1.5f);
+		glVertex2i(position[1].X * 1.5f, position[1].Y * 1.5f);
 		glEnd();
 		glPopMatrix();
 	}

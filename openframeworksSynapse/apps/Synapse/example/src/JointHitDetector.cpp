@@ -200,17 +200,17 @@ bool JointHitDetector::LongEnough(const ofxVec3f& vec) const
 
 void JointHitDetector::Draw() const
 {
-   for (int i=1; i<mPoints.size(); ++i)
+   /*for (int i=1; i<mPoints.size(); ++i)
    {
       glPushMatrix();
 		glLineWidth(3);
 		glColor3f(0,0,1);
 		glBegin(GL_LINES);
-      glVertex2f(320 + mPoints[i-1].x * .5f, 240 - mPoints[i-1].y * .5f);
-      glVertex2f(320 + mPoints[i].x * .5f, 240 - mPoints[i].y * .5f);
+		glVertex2f(320 + mPoints[i-1].x * .5f, 240 - mPoints[i-1].y * .5f);
+		glVertex2f(320 + mPoints[i].x * .5f, 240 - mPoints[i].y * .5f);
 		glEnd();
 		glPopMatrix();
-   }
+   }*/
    
    for (int i=0; i<kNumHitDirections; ++i)
       DrawHitDirection((HitDirection)i);
@@ -252,7 +252,7 @@ void JointHitDetector::DrawHitDirection(HitDirection hitDirection) const
    
    glPushMatrix();
    glLineWidth(10);
-   glColor3f(0,mHitAreaDisplay[hitDirection]/_hitAreaDisplayTime,0);
+   glColor4f(1,(1.0f - mHitAreaDisplay[hitDirection]/_hitAreaDisplayTime),1,(mHitAreaDisplay[hitDirection]/_hitAreaDisplayTime + 0.1f));
    glBegin(GL_LINES);
    glVertex2f(vPos.x + vDisplayPoint.x - 10, vPos.y + vDisplayPoint.y);
    glVertex2f(vPos.x + vDisplayPoint.x + 10, vPos.y + vDisplayPoint.y);

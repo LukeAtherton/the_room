@@ -76,7 +76,8 @@ void testApp::draw()
 	glPushMatrix();
 	glScalef(1, 1, 1);
 	
-	recordDepth.draw(0,0,640,480);
+	//recordDepth.draw(0,0,640,480);
+	recordImage.draw(0,0,960,720);
    recordUser.draw();	
 
 	for (int currentSkeleton=0; currentSkeleton<mActiveSkeletons.size(); ++currentSkeleton){

@@ -81,7 +81,7 @@ ofxVec3f ActiveSkeleton::GetProjectivePos(XnSkeletonJoint joint) const
    pos[0].X = vPos.x; pos[0].Y = vPos.y; pos[0].Z = vPos.z; 
    mDepthGenerator->getXnDepthGenerator().ConvertRealWorldToProjective(1, pos, pos);
    
-   vPos.x = pos[0].X; vPos.y = pos[0].Y; vPos.z = pos[0].Z; 
+   vPos.x = pos[0].X * 1.5f; vPos.y = pos[0].Y * 1.5f; vPos.z = pos[0].Z * 1.5f; 
    return vPos;
 }
 

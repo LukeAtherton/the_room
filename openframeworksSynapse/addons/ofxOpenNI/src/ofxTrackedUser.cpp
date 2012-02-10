@@ -152,5 +152,7 @@ void ofxTrackedUser::debugDraw() {
 	
 	hip.debugDraw();
 
-	ofDrawBitmapString(ofToString((int)id), neck.position[0].X + 10, neck.position[0].Y);
+	glColor3f(1,0,0);
+
+	ofDrawBitmapString("User# " + ofToString((int)id), (neck.position[0].X * 1.5), (neck.position[0].Y * 1.5 - 50));
 }

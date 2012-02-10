@@ -15,6 +15,8 @@ void XN_CALLBACK_TYPE User_NewUser(
 {
 	ofxUserGenerator* user = static_cast<ofxUserGenerator*>(pCookie);
 	
+	printf("Total Users: %d\n", user->getNumberOfTrackedUsers());
+
 	if(user->getNumberOfTrackedUsers() < 5){ 
 
 		printf("New User %d\n", nID);
