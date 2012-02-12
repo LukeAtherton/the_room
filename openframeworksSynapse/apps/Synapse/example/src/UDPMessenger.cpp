@@ -99,7 +99,7 @@ void UDPMessenger::readConfFile(std::istream& is)
 }
 
 void UDPMessenger::Dispatch() {
-	//mBundledSender.sendBundle(bundle);
+	mBundledSender.sendBundle(bundle);
 	// Clear the bundle after we have dispatched it.
 	bundle.clear();
 }

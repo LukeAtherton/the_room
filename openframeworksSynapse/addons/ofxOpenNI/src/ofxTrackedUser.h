@@ -28,14 +28,16 @@ struct ofxLimb {
 	void debugDraw() {
 		if(!found)
 			return;
-		glPushMatrix();
-		glLineWidth(10);
-		glColor4f(0,1,0,0.3f);
-		glBegin(GL_LINES);
-		glVertex2i(position[0].X * 1.5f, position[0].Y * 1.5f);
-		glVertex2i(position[1].X * 1.5f, position[1].Y * 1.5f);
-		glEnd();
-		glPopMatrix();
+		if(position[0].X > 0.0f && position[0].Y > 0.0f && position[1].X > 0.0f && position[1].Y > 0.0f){
+			glPushMatrix();
+			glLineWidth(10);
+			glColor4f(0,1,0,0.3f);
+			glBegin(GL_LINES);
+			glVertex2i(position[0].X * 1.5f, position[0].Y * 1.5f);
+			glVertex2i(position[1].X * 1.5f, position[1].Y * 1.5f);
+			glEnd();
+			glPopMatrix();
+		}
 	}
 
 };

@@ -218,7 +218,7 @@ void JointHitDetector::Draw() const
 
 void JointHitDetector::DrawHitDirection(HitDirection hitDirection) const
 {
-   ofxVec2f vDisplayPoint;
+	ofxVec2f vDisplayPoint;
    
    switch(hitDirection)
    {
